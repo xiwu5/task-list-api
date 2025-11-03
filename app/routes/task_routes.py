@@ -48,3 +48,14 @@ def get_all_tasks():
 def get_one_task(task_id):
     task = validate_model(Task, task_id)
     return task.to_dict()
+
+@tasks_bp.put("/<task_id>")
+def update_task(task_id):
+    book = validate_model(Task, task_id)
+    request_body = request.get_json()
+
+    book.title = request_body["title"]
+    book.description = request_body["description"]
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
