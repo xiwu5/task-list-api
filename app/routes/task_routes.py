@@ -22,8 +22,29 @@ def create_task():
 
     return new_task.to_dict(), 201
 
+@tasks_bp.get("")
+def get_all_tasks():
+    query = db.select(Task)
+
+    title_param = request.args.get("title")
+    if title_param:
+        query = query.where(Task.title.ilike(f"%{title_param}%"))
+
+    description_param = request.args.get("description")
+    if description_param:
+        query = query.where(Task.description.ilike(f"%{description_param}%"))
+
+    query = query.order_by(Task.id)
+
+    tasks = db.session.scalars(query)
+
+    tasks_response = []
+    for book in tasks:
+        tasks_response.append(book.to_dict())
+    return tasks_response
+
 
 @tasks_bp.get("/<task_id>")
 def get_one_task(task_id):
-    book = validate_model(Task, task_id)
-    return book.to_dict()
+    task = validate_model(Task, task_id)
+    return task.to_dict()
