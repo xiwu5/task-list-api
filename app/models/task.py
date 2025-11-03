@@ -28,3 +28,11 @@ class Task(db.Model):
         task_as_dict["is_complete"] = self.completed_at is not None
         
         return task_as_dict
+
+    @classmethod
+    def get_by_id(cls, task_id):
+        task = db.session.get(cls, task_id)
+        
+        if task is None:
+            return {"message": f"Task with ID {task_id} not found"}, 404
+        return task, 200
