@@ -6,7 +6,7 @@ from app.db import db
 import pytest
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_mark_complete_on_incomplete_task(client, one_task):
     # Arrange
     """
@@ -34,7 +34,7 @@ def test_mark_complete_on_incomplete_task(client, one_task):
     assert db.session.scalar(query).completed_at
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_mark_incomplete_on_complete_task(client, completed_task):
     # Act
     response = client.patch("/tasks/1/mark_incomplete")

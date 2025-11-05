@@ -74,3 +74,11 @@ def delete_task(task_id):
 
     return Response(status=204, mimetype="application/json")
 
+@tasks_bp.patch("/<task_id>/mark_complete")
+def mark_task_complete(task_id):
+    task = validate_model(Task, task_id)
+    task.completed_at = db.func.now()
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
