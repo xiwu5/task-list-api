@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, abort, make_response, request
-from app.routes.route_utilities import validate_model
+from app.routes.route_utilities import create_model, validate_model, get_models_with_filters, create_no_content_response
 from app.models.task import Task
 from flask import Blueprint
 from ..db import db
@@ -9,18 +9,7 @@ tasks_bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 @tasks_bp.post("")
 def create_task():
     request_body = request.get_json()
-
-    try:
-        new_task = Task.from_dict(request_body)
-
-    except KeyError as error:
-        response = {"details": "Invalid data"}
-        abort(make_response(response, 400))
-
-    db.session.add(new_task)
-    db.session.commit()
-
-    return new_task.to_dict(), 201
+    return create_model(Task, request_body)
 
 @tasks_bp.get("")
 def get_all_tasks():
@@ -64,7 +53,7 @@ def update_task(task_id):
     book.description = request_body["description"]
     db.session.commit()
 
-    return Response(status=204, mimetype="application/json")
+    return create_no_content_response()
 
 @tasks_bp.delete("/<task_id>")
 def delete_task(task_id):
@@ -72,7 +61,7 @@ def delete_task(task_id):
     db.session.delete(task)
     db.session.commit()
 
-    return Response(status=204, mimetype="application/json")
+    return create_no_content_response()
 
 @tasks_bp.patch("/<task_id>/mark_complete")
 def mark_task_complete(task_id):
@@ -80,7 +69,7 @@ def mark_task_complete(task_id):
     task.completed_at = db.func.now()
     db.session.commit()
 
-    return Response(status=204, mimetype="application/json")
+    return create_no_content_response()
 
 @tasks_bp.patch("/<task_id>/mark_incomplete")
 def mark_task_incomplete(task_id):
@@ -88,5 +77,5 @@ def mark_task_incomplete(task_id):
     task.completed_at = None
     db.session.commit()
 
-    return Response(status=204, mimetype="application/json")
+    return create_no_content_response()
 
