@@ -34,7 +34,13 @@ def get_all_tasks():
     if description_param:
         query = query.where(Task.description.ilike(f"%{description_param}%"))
 
-    query = query.order_by(Task.id)
+    sort_param = request.args.get("sort")
+    if sort_param == "asc":
+        query = query.order_by(Task.title)
+    elif sort_param == "desc":
+        query = query.order_by(Task.title.desc())
+    else:
+        query = query.order_by(Task.id)
 
     tasks = db.session.scalars(query)
 
@@ -67,3 +73,4 @@ def delete_task(task_id):
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
+
