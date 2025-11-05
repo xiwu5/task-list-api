@@ -3,6 +3,8 @@ from app.routes.route_utilities import create_model, validate_model, get_models_
 from app.models.task import Task
 from flask import Blueprint
 from ..db import db
+import os
+import requests
 
 tasks_bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 
@@ -68,6 +70,19 @@ def mark_task_complete(task_id):
     task = validate_model(Task, task_id)
     task.completed_at = db.func.now()
     db.session.commit()
+    # send a notification to Slack
+    # reference:https://docs.slack.dev/tools/python-slack-sdk/legacy/basic_usage/
+    try:
+        slack_token = os.environ.get("SLACK_API_TOKEN")
+        headers = {"Authorization": f"Bearer {slack_token}"} if slack_token else {}
+        message = {
+            "channel": "task-notifications",
+            "text": f"Someone just completed the task {task.title}"
+        }
+        
+        requests.post("https://slack.com/api/chat.postMessage", json=message, headers=headers)
+    except Exception:
+        pass
 
     return create_no_content_response()
 
