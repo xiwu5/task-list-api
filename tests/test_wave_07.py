@@ -38,19 +38,18 @@ def test_route_utilities_validate_model_with_task_invalid_id(client, three_tasks
     assert response.get_json() == {"message": "Task One invalid"}
 
     
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_validate_model_with_task_missing_id(client, three_tasks):
     #Act & Assert
     with pytest.raises(HTTPException) as e:
         result_task = validate_model(Task, 4)
     
-    raise Exception("Complete test with assertion status code and response body")
-    # *****************************************************************************
-    # **Complete test with assertion about status code response body***************
-    # *****************************************************************************
+    response = e.value.get_response()
+    assert response.status_code == 404
+    assert response.get_json() == {"message": "Task 4 not found"}
 
     
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_validate_model_with_goal(client, one_goal):
     #Act
     goal_1 = validate_model(Goal, 1)
