@@ -25,3 +25,13 @@ def get_all_goals():
 def get_one_goal(goal_id):
     goal = validate_model(Goal, goal_id)
     return goal.to_dict()
+
+@goals_bp.put("/<goal_id>")
+def update_goal(goal_id):
+    goal = validate_model(Goal, goal_id)
+    request_body = request.get_json()
+
+    goal.title = request_body["title"]
+    db.session.commit()
+
+    return goal.to_dict()
