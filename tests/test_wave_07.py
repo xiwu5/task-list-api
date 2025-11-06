@@ -4,7 +4,7 @@ from app.models.goal import Goal
 from app.models.task import Task
 from app.routes.route_utilities import create_model, validate_model
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_validate_model_with_task(client, three_tasks):
     #Act
     task_1 = validate_model(Task, 1)
@@ -24,7 +24,7 @@ def test_route_utilities_validate_model_with_task(client, three_tasks):
     assert task_3.title == "Pay my outstanding tickets 😭"
 
 
-@pytest.mark.skip(reason="No way to test this feature yet")
+#@pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_validate_model_with_task_invalid_id(client, three_tasks):
     #Act & Assert
     # Calling `validate_model` without being invoked by a route will
@@ -35,12 +35,9 @@ def test_route_utilities_validate_model_with_task_invalid_id(client, three_tasks
     # Test that the correct status code and response message are returned
     response = e.value.get_response()
     assert response.status_code == 400
+    assert response.get_json() == {"message": "Task One invalid"}
 
-    raise Exception("Complete test with an assertion about the response body")
-    # *****************************************************************************
-    # ** Complete test with an assertion about the response body ****************
-    # *****************************************************************************
-
+    
 @pytest.mark.skip(reason="No way to test this feature yet")
 def test_route_utilities_validate_model_with_task_missing_id(client, three_tasks):
     #Act & Assert
