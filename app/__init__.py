@@ -19,7 +19,6 @@ def create_app(config=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Register Blueprints here
     app.register_blueprint(tasks_bp)
     app.register_blueprint(goals_bp)
     return app
