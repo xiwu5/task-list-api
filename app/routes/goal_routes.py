@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from app.routes.route_utilities import create_model, get_models_with_filters, validate_model
+from app.routes.route_utilities import create_model, get_models_with_filters, validate_model, create_no_content_response
 from ..db import db
 from app.models.goal import Goal
 
@@ -35,3 +35,11 @@ def update_goal(goal_id):
     db.session.commit()
 
     return goal.to_dict()
+
+@goals_bp.delete("/<goal_id>")
+def delete_goal(goal_id):
+    goal = validate_model(Goal, goal_id)
+    db.session.delete(goal)
+    db.session.commit()
+
+    return create_no_content_response()
